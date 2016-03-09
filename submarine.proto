@@ -1,0 +1,61 @@
+syntax = "proto2";
+option java_package = "com.cvoltidioten.submarinecontrol";
+option java_outer_classname = "SubmarineProtos";
+//import "nanopb.proto"; // Uncomment if compiling for C.
+
+// -------- CONTROL ----> SUBMARINE --------------------------------------------
+
+message ControlMessage {
+	enum MessageType {
+		DIVE = 0;
+		CANCEL_DIVE = 1;
+		STATUS_REQUEST = 2;
+		DATA_REQUEST = 3;
+	}
+	required MessageType type = 1;
+	optional Dive dive = 2;
+}
+
+message Dive {
+	required uint32 offset_s = 1;
+	required uint32 depth_m = 2;
+}
+
+// -------- SUBMARINE ----> CONTROL --------------------------------------------
+
+message SubmarineMessage {
+	enum MessageType {
+		STATUS = 0;
+		DATA = 1;
+	}
+	required MessageType type = 1;
+	optional Status status = 2;
+	repeated Datum data = 3;
+}
+
+message Status {
+	enum StatusType {
+		AVAILABLE = 0;
+		DIVE_SCHEDULED = 1;
+		DIVING = 2;
+	}
+	required StatusType type = 1;
+	// The time the submarine spent in the _previous_ state
+	optional uint32 spent_time_s = 2;
+	// An optional message to indicate possible errors
+	optional string message = 3;
+	// Optional health information of submarine
+	message Informations {
+		optional float battery_percentage = 1;
+		// ...
+	}
+	optional Informations informations = 4;
+}
+
+// Each sensor data is grep'd at the same time, so they are grouped together
+message Datum {
+	required uint32 timestamp = 1;
+	required float depth = 2;
+	required float temperature = 3;
+	required float pressure = 4;
+}
