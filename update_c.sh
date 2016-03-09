@@ -1,3 +1,6 @@
 #!/bin/bash
 
-protoc --plugin=protoc-gen-nanopb=../submarine/libraries/nanopb/generator/protoc-gen-nanopb --nanopb_out=../submarine/libraries/protocol submarine.proto && sed 's/<pb.h>/"..\/nanopb\/pb.h"/g' ../submarine/libraries/protocol/submarine.pb.h > ../submarine/libraries/protocol/submarine.pb.h.new && rm ../submarine/libraries/protocol/submarine.pb.h && mv ../submarine/libraries/protocol/submarine.pb.h.new ../submarine/libraries/protocol/submarine.pb.h
+DST_DIR="../libraries/protocol"
+NANOPB_DIR="../libraries/nanopb"
+
+protoc --plugin=protoc-gen-nanopb=$NANOPB_DIR/generator/protoc-gen-nanopb --nanopb_out=$DST_DIR submarine.proto && sed 's/<pb.h>/"..\/nanopb\/pb.h"/g' $DST_DIR/submarine.pb.h > $DST_DIR/submarine.pb.h.new && rm $DST_DIR/submarine.pb.h && mv $DST_DIR/submarine.pb.h.new .$DST_DIR/submarine.pb.h
